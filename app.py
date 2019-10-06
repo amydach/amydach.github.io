@@ -21,6 +21,7 @@ Base.prepare(engine, reflect=True)
 # Save reference to the table
 measurement = Base.classes.measurement
 station = Base.classes.station
+#precipitation = Base.classes.precipitation
 
 #################################################
 # Flask Setup
@@ -37,28 +38,27 @@ def welcome():
     """List all available api routes."""
     return (
         f"Available Routes:<br/>"
-        f"/api/v1.0/precipitation<br/>"
-        f"/api/v1.0/stations<br/>"
-        f"/api/v1.0/tobs<br/>"
-        f"/api/v1.0/<start><br/>"
-        f"/api/v1.0/<start>/<end>"
-
+        f"/api/v1.0/precipitation"
     )
+#        f"/api/v1.0/<start><br/>"
+#        f"/api/v1.0/<start>/<end>"
+#        f"/api/v1.0/stations<br/>"
+#        f"/api/v1.0/tobs<br/>"
 
 @app.route("/api/v1.0/precipitation")
-def precipation():
+def precipitation():
     # Create our session (link) from Python to the DB
     session = Session(engine)
 
-    """Return a list of precipitation data including the date, prcp"""
-    # Query ??
-    results = session.query(df.date, df.prcp).all()
+    """Return a list of precipitation data including the date and prcp"""
+    # Query all precipitation
+    results = session.query(Precipitation.date, Precipitation.prcp).all()
 
     session.close()
 
     # Create a dictionary from the row data and append to a list of all_precipitation
-    all_prcp = []
-    for date, prcp in results:
+    all_precipitation = []
+    for date in results:
         precipitation_dict = {}
         precipitation_dict["date"] = date
         precipitation_dict["prcp"] = prcp
